@@ -15,7 +15,9 @@ class App extends Component {
         imgUrl: 'https://img.freepik.com/photos-gratuite/portrait-belle-jeune-fille-t-shirt-blanc-posant-regardant-camera-isolee-fond-studio-rose_155003-46555.jpg?w=2000',
         profession: 'Developer'
       },
-      show: true
+      show: true,
+      mountTime: new Date(),
+      timeSinceMount: 0
     };
   }
 
@@ -24,9 +26,19 @@ class App extends Component {
       show: !prevState.show
     }));
   };
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      const currentTime = new Date();
+      const timeDiff = Math.floor((currentTime - this.state.mountTime) / 1000);
+      this.setState({ timeSinceMount: timeDiff });
+    }, 1000);
+  }
 
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
   render() {
-    const { person, show } = this.state;
+    const { person, show, timeSinceMount } = this.state;
 
     return (
       <div className="container">
@@ -42,6 +54,7 @@ class App extends Component {
             <p>{person.profession}</p>
           </div>
         )}
+         <p>Time since mount: {timeSinceMount} seconds</p>
       </div>
     );
   }
